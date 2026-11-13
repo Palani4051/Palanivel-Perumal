@@ -1,0 +1,394 @@
+{%- liquid
+  assign s = section.settings
+  assign bottom_row_background = s.bottom_row_background
+  assign bottom_row_text_color = s.bottom_row_text_color
+
+  if section.settings.background_color != blank
+    render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
+  endif
+-%}
+
+{% style %}
+    #banner-{{ section.id }} {
+      --banner-min-height: {{ s.min_height_desktop }}px;
+      --banner-text-color: {{ s.text_color }};
+      position: relative;
+      display: grid;
+      width: 100%;
+      min-height: var(--banner-min-height);
+      overflow: hidden;
+      color: var(--banner-text-color);
+    }
+
+    #banner-{{ section.id }} .banner-image,
+    #banner-{{ section.id }} .banner-content {
+      grid-area: 1 / 1;
+    }
+
+    #banner-{{ section.id }} .banner-image {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: var(--banner-min-height);
+    }
+
+    #banner-{{ section.id }} .banner-image img,
+    #banner-{{ section.id }} .banner-image svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    #banner-{{ section.id }} .banner-content {
+      position: relative;
+      display:flex;
+      flex-direction: column;
+      z-index: 2;
+      width: 100%;
+      max-width: 520px;
+      padding: clamp(32px, 6vw, 80px) clamp(20px, 4vw, 52px);
+    }
+
+    /* Vertical position */
+    #banner-{{ section.id }} .banner-content[data-v="top"] { align-self: start; }
+    #banner-{{ section.id }} .banner-content[data-v="middle"] { align-self: center; }
+    #banner-{{ section.id }} .banner-content[data-v="bottom"] { align-self: end; }
+
+    /* Horizontal position + text alignment */
+    #banner-{{ section.id }} .banner-content[data-h="left"] { justify-self: start; text-align: left; }
+    #banner-{{ section.id }} .banner-content[data-h="center"] { justify-self: center; text-align: center; }
+    #banner-{{ section.id }} .banner-content[data-h="right"] { justify-self: end; text-align: right; }
+
+    #banner-{{ section.id }} .banner-heading {
+      margin: 0 0 clamp(24px, 4vw, 1.75rem);
+      color: inherit;
+    }
+
+    #banner-{{ section.id }} .banner-text {
+      color: inherit;
+          margin: 0 0 clamp(24px, 3vw, 40px);
+    }
+
+    #banner-{{ section.id }} .banner-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 44px;
+      border-radius: 0;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      text-decoration: none;
+      line-height: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    #banner-{{ section.id }} .banner-link:hover {
+      opacity: 0.85;
+    }
+
+    #banner-{{ section.id }} .banner-link svg {
+      width: 26px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    /* Bottom strip */
+    .banner-bottom-text {
+      width: 100%;
+      padding: 10px 16px;
+      background: {{ bottom_row_background }};
+      text-align: center;
+    }
+
+    .banner-bottom-text p {
+      margin: 0;
+      text-transform: uppercase;
+      color: {{ bottom_row_text_color }};
+    }
+
+    /* Tablet */
+    @media screen and (max-width: 989px) {
+      #banner-{{ section.id }} .banner-content {
+        max-width: 440px;
+      }
+    }
+
+    /* Mobile: text sits on a soft white panel so it stays readable over the artwork */
+    @media screen and (max-width: 749px) {
+      #banner-{{ section.id }} {
+        --banner-min-height: {{ s.min_height_mobile }}px;
+      }
+      #banner-{{ section.id }} .banner-content {
+        max-width: 100%;
+        padding: 24px 20px;
+      }
+    }
+
+  @media screen and (max-width: 576px) {
+      #banner-{{ section.id }} .banner-content {
+       align-self: unset !important;
+       justify-content:space-between;
+      }
+    }
+{% endstyle %}
+
+<div
+  class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
+></div>
+
+<section
+  class="
+    banner-section section spacing-style
+    section--{{ section.settings.section_width }}
+    {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+  "
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div id="banner-{{ section.id }}" class="banner-section">
+    <div class="banner-image">
+      {%- if s.banner_image -%}
+        {{
+          s.banner_image
+          | image_url: width: 2800
+          | image_tag: widths: '750, 1100, 1500, 2000, 2800', sizes: '100vw', loading: 'eager', alt: s.banner_heading
+        }}
+      {%- else -%}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    <div
+      class="banner-content"
+      data-v="{{ s.content_vertical }}"
+      data-h="{{ s.content_horizontal }}"
+    >
+      <div class="banner-content-text-wrapper">
+        {%- if s.banner_heading != blank -%}
+          <h2 class="banner-heading">{{ s.banner_heading }}</h2>
+        {%- endif -%}
+
+        {%- if s.banner_text != blank -%}
+          <p class="banner-text">{{ s.banner_text | newline_to_br }}</p>
+        {%- endif -%}
+      </div>
+      {%- if s.banner_link_text != blank -%}
+        <a
+          class="
+            banner-link
+            {{ s.style_class }}
+            {{ s.style_class }}--{{ section.id }}
+          "
+          {% if s.banner_link != blank %}
+            href="{{ s.banner_link }}"
+          {% else %}
+            role="link"
+            aria-disabled="true"
+          {% endif %}
+          {% if s.open_in_new_tab %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+        >
+          <span>{{ s.banner_link_text }}</span>
+          {% render 'arrow-icon' %}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if s.bottom_text != blank -%}
+    <div class="banner-bottom-text">
+      <p>{{ s.bottom_text }}</p>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "t:names.banner_section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "t:settings.background_media"
+    },
+    {
+      "type": "text",
+      "id": "banner_heading",
+      "label": "t:settings.heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "text",
+      "id": "banner_text",
+      "label": "t:settings.description_text",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "text",
+      "id": "banner_link_text",
+      "label": "t:settings.button",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "banner_link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "t:settings.open_new_tab",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "style_class",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:options.primary"
+        },
+        {
+          "value": "button-secondary",
+          "label": "t:options.secondary"
+        },
+        {
+          "value": "button-unstyled",
+          "label": "t:options.link"
+        }
+      ],
+      "default": "button",
+      "info": "t:info.edit_button_style_in_theme_settings"
+    },
+    {
+      "type": "header",
+      "content": "t:content.content_position"
+    },
+    {
+      "type": "select",
+      "id": "content_vertical",
+      "label": "t:settings.y_position",
+      "options": [
+        { "value": "top", "label": "t:options.top" },
+        { "value": "middle", "label": "t:options.center" },
+        { "value": "bottom", "label": "t:options.bottom" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "select",
+      "id": "content_horizontal",
+      "label": "t:settings.x_position",
+      "options": [
+        { "value": "left", "label": "t:options.left" },
+        { "value": "center", "label": "t:options.center" },
+        { "value": "right", "label": "t:options.right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:content.bottom_content"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "t:settings.bottom_row_text",
+      "default": "Sustainable, ethically made clothes in sizes XXS to 6XL"
+    },
+    {
+      "type": "color",
+      "id": "bottom_row_background",
+      "label": "t:settings.bottom_row_background",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "bottom_row_text_color",
+      "label": "t:settings.text_color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "t:content.banner_height"
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "label": "t:settings.desktop_height",
+      "min": 300,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "label": "t:settings.mobile_height",
+      "min": 300,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.banner_section"
+    }
+  ]
+}
+{% endschema %}
