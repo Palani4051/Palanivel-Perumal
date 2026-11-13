@@ -163,7 +163,10 @@
     "disclosures": "Disclosures",
     "disclosures_metafield_content": "Required safety warnings and regulatory disclosures for this product.",
     "app_required_for_ratings": "An app is required for product ratings. [Learn more](https://help.shopify.com/manual/apps)",
-    "navigation": "Navigation"
+    "navigation": "Navigation",
+    "banner_height": "Banner height",
+    "content_position": "Content position",
+    "bottom_content":"Bottom content",
   },
   "html_defaults": {
     "join_our_email_list": "<h2>Join our email list</h2>",
@@ -251,7 +254,8 @@
     "video_external": "Use a YouTube or Vimeo URL",
     "pills_usage": "Used for applied filters, discount codes, and search suggestions",
     "media_type_info": "Features are populated from your menu links",
-    "show_physical_stores_help": "Also list locations marked as a physical storefront that have the product in stock, even when they don't offer pickup."
+    "show_physical_stores_help": "Also list locations marked as a physical storefront that have the product in stock, even when they don't offer pickup.",
+    "hotspot_image_info": "Optional. If empty, the product's main image is used.",
   },
   "names": {
     "column": "Column",
@@ -420,7 +424,10 @@
     "view_all_button": "View all",
     "disclosures": "Disclosures",
     "pills": "Pills",
-    "comparison_slider": "Comparison slider"
+    "comparison_slider": "Comparison slider",
+    "banner_section": "Banner section",
+    "Hotspot": "Hotspot section",
+    "hotspot_image": "Hotspot image",
   },
   "options": {
     "above_carousel": "Above carousel",
@@ -745,7 +752,9 @@
     "wide": "Wide",
     "youtube": "YouTube",
     "with_hints": "With hints",
-    "below_media": "Below media"
+    "below_media": "Below media",
+    "one": "1",
+    "two": "2",
   },
   "settings": {
     "accordion": "Accordion",
@@ -1202,7 +1211,12 @@
     "top_row_background": "Top row background",
     "top_row_text": "Top row text",
     "bottom_row_background": "Bottom row background",
-    "bottom_row_text": "Bottom row text"
+    "bottom_row_text": "Bottom row text",
+    "description_text": "Description",
+    "columns_desktop":"Desktop columns",
+    "heading_size": "Heading size",
+
+    
   },
   "text_defaults": {
     "accordion_heading": "Accordion heading",
